@@ -1,42 +1,34 @@
 package com.amazon.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Entity
 public class Category {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+    private Long id;
 
     @Column(length = 128, nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
-
+//    @OneToMany(mappedBy = "categoris")
+//    private List<Product> products;
     private boolean enabled;
 
     public Category() {
     }
 
-    public Category(Integer id, String name, List<Product> products, boolean enabled) {
+    public Category(Long id, String name, boolean enabled) {
         this.id = id;
         this.name = name;
-        this.products = products;
         this.enabled = enabled;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -46,14 +38,6 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 
     public boolean isEnabled() {

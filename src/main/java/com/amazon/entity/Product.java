@@ -1,61 +1,51 @@
 package com.amazon.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+
 @Entity
-@Data
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
-
+    private Integer id;
     @Column(unique = true, length = 255, nullable = false)
     private String name;
-
-    @Column(length = 4096, nullable = false, name = "description")
+    @Column(length = 4096, nullable = false)
     private String description;
-
-    @Column(name = "created_time")
+    @CreationTimestamp
+    @Column(name = "created_time", updatable = false)
     private Date createdTime;
-
-    @Column(name = "updated_time")
+    @UpdateTimestamp
+    @Column(name = "updated_time",insertable = false)
     private Date updatedTime;
-
     private boolean enabled;
-
     @Column(name = "in_stock")
     private boolean inStock;
-
     private float price;
-
     private float cost;
     @Column(name = "discount_percent")
     private float discountPercent;
-
-    @Column(name = "main_image", nullable = false)
+    @Column(name = "mainImage",nullable = false)
     private String mainImage;
-
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<ProductImage> images = new HashSet<>();
-
     public Product() {
     }
 
-    public Product(Integer id, String name, String description, Date createdTime, Date updatedTime, boolean enabled, boolean inStock, float price, float cost, float discountPercent, String mainImage, Category category, Brand brand) {
+    public Product(Integer id, String name, String description, Date createdTime,
+                   Date updatedTime, boolean enabled, boolean inStock, float price,
+                   float cost, float discountPercent, String mainImage, Category category,
+                   Brand brand)
+    {
         this.id = id;
         this.name = name;
         this.description = description;
