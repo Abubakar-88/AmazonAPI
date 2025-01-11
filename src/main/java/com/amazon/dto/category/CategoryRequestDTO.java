@@ -1,15 +1,8 @@
 package com.amazon.dto.category;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
-
 public class CategoryRequestDTO {
 
-    @NotBlank(message = "Name is required and cannot be blank.")
-    @Size(min = 3, max = 128, message = "Name must be between 3 and 128 characters.")
     private String name;
-
     private boolean enabled;
 
     public CategoryRequestDTO() {

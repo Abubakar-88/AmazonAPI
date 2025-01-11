@@ -6,13 +6,16 @@ import com.amazon.dto.brand.BrandResponseDTO;
 import java.util.List;
 
 public interface BrandService {
-    BrandResponseDTO createBrand(BrandRequestDTO requestDTO);
+     BrandResponseDTO createBrand(BrandRequestDTO resquestDTO);
+     List<BrandResponseDTO> getAllBrands();
 
-    BrandResponseDTO updateBrand(Long id, BrandRequestDTO requestDTO);
+     BrandResponseDTO getBrandById(Long id);
 
-    BrandResponseDTO getBrandById(Long id);
 
-    List<BrandResponseDTO> getAllBrands();
 
-    void deleteBrand(Long id);
+     void deleteBrand(Long id);
+
+     BrandResponseDTO updateBrand(Long id, BrandRequestDTO brandDetails) ;
+
+
 }

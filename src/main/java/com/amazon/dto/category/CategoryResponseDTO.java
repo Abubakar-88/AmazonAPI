@@ -1,9 +1,5 @@
 package com.amazon.dto.category;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 public class CategoryResponseDTO {
     private Long id;
     private String name;
