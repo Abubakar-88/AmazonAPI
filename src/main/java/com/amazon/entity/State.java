@@ -1,13 +1,11 @@
 package com.amazon.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 
 @Entity
 @Table(name = "states")
 public class State {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,10 +13,9 @@ public class State {
     @Column(nullable = false, length = 45)
     private String name;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id")
-    @JsonBackReference
+    @JoinColumn(name = "country_id", nullable = false)
+    @JsonIgnore
     private Country country;
 
     public State() {

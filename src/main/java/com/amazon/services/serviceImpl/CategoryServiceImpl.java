@@ -87,6 +87,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
+    @Override
+    public List<CategoryResponseDTO> addCategories(List<CategoryRequestDTO> requestDTOs) {
+        List<Category> categories = requestDTOs.stream()
+                .map(dto -> modelMapper.map(dto, Category.class))
+                .collect(Collectors.toList());
+
+        List<Category> savedCategories = categoryRepository.saveAll(categories);
+
+        return savedCategories.stream()
+                .map(category -> modelMapper.map(category, CategoryResponseDTO.class))
+                .collect(Collectors.toList());
+    }
+
 
 
 }

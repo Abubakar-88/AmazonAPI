@@ -22,7 +22,7 @@ public class BrandController {
    @Autowired
    private CategoryService categoryService;
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<BrandResponseDTO> createBrand(@RequestBody BrandRequestDTO resquestDTO){
             BrandResponseDTO  brandResponseDTO= brandService.createBrand(resquestDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(brandResponseDTO);
@@ -34,7 +34,7 @@ public class BrandController {
        return ResponseEntity.ok(categories);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<BrandResponseDTO>> getAllBrands() {
         List<BrandResponseDTO> brands = brandService.getAllBrands();
         return ResponseEntity.ok(brands);

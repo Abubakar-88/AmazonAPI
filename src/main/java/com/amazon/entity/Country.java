@@ -1,29 +1,24 @@
 package com.amazon.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
-
 
 @Entity
 @Table(name = "countries")
 public class Country {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, length = 45)
     private String name;
-
     @Column(nullable = false, length = 5)
     private String code;
 
-
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private Set<State> states;
+    private Set<State> states = new HashSet<>();
 
     public Country() {
     }

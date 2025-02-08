@@ -71,7 +71,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDTO updateProduct(Integer id, ProductRequestDTO productRequestDTO) {
-        return null;
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+
+        // Check if the new name is unique
+        if (!existingProduct.getName().equalsIgnoreCase(productRequestDTO.getName()) &&
+                productRepository.existsByName(productRequestDTO.getName())) {
+            throw new DuplicateFieldException("Product name", productRequestDTO.getName());
+        }
+
+        // Map updated values to existing product
+        mapDTOtoEntity(productRequestDTO, existingProduct);
+        Product updatedProduct = productRepository.save(existingProduct);
+        return modelMapper.map(updatedProduct, ProductResponseDTO.class);
     }
 
     @Override
@@ -83,6 +95,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Integer productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+        productRepository.delete(product);
 
     }
 
@@ -96,7 +111,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponseDTO> getProductsByCategory(Integer categoryId) {
-        return null;
+        List<Product> products = productRepository.findByCategoryId(categoryId);
+        if (products.isEmpty()) {
+            throw new ResourceNotFoundException("No products found for category ID: " + categoryId);
+        }
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
     private void mapDTOtoEntity(ProductRequestDTO dto, Product product) {

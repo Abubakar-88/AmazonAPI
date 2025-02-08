@@ -17,11 +17,17 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Object> createCategory(@RequestBody CategoryRequestDTO requestDTO){
             CategoryResponseDTO responseDTO  = categoryService.createCategory(requestDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<CategoryResponseDTO>> addCategories(@RequestBody List<CategoryRequestDTO> categoryRequestDTOs) {
+        List<CategoryResponseDTO> savedCategories = categoryService.addCategories(categoryRequestDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategories);
     }
     @GetMapping
     public ResponseEntity<List<CategoryResponseDTO>> getAllCategoris(){
