@@ -1,15 +1,10 @@
 package com.amazon.dto.state;
 
-public class StateResponseBody {
+public class StateResponseDTO {
     private Integer id;
     private String name;
 
-    public StateResponseBody() {
-    }
-
-    public StateResponseBody(Integer id, String name) {
-        this.id = id;
-        this.name = name;
+    public StateResponseDTO() {
     }
 
     public Integer getId() {
@@ -27,4 +22,6 @@ public class StateResponseBody {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

@@ -1,10 +1,12 @@
 package com.amazon.controller;
 
 
-import com.amazon.entity.Country;
-import com.amazon.entity.State;
-import com.amazon.exception.ResourceNotFoundException;
+import com.amazon.dto.country.CountryRequestDTO;
+import com.amazon.dto.country.CountryResponseDTO;
+import com.amazon.dto.state.StateRequestDTO;
+import com.amazon.dto.state.StateResponseDTO;
 import com.amazon.services.service.CountryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,75 +14,72 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/countries") // Base URL for all methods in this controller
+@RequestMapping("/api/countries")
 public class CountryController {
 
-    private final CountryService countryService;
+    @Autowired
+    private CountryService countryService;
 
-    // Constructor for dependency injection
-    public CountryController(CountryService countryService) {
-        this.countryService = countryService;
-    }
-
-    // Get a list of all countries
-    @GetMapping
-    public List<Country> getAllCountries() {
-        return countryService.getAllCountries();
-    }
-
-    // Get a single country by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Country> getCountryById(@PathVariable Integer id) {
-        return countryService.getCountryById(id)
-                .map(country -> ResponseEntity.ok(country)) // If found, return 200 OK with the country
-                .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404 Not Found
-    }
-
-    // Add a new country
     @PostMapping
-    public Country addCountry(@RequestBody Country country) {
-        return countryService.saveCountry(country);
+    public ResponseEntity<Object> addCountry(@RequestBody CountryRequestDTO countryRequestDTO){
+        CountryResponseDTO responseDTO = countryService.saveCountry(countryRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
-    // Update an existing country
-    @PutMapping("/{id}")
-    public ResponseEntity<Country> updateCountry(@PathVariable Integer id, @RequestBody Country country) {
-        boolean updated = countryService.updateCountry(id, country);
-        if (updated) {
-            return ResponseEntity.ok(country);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/{countryId}")
+    public ResponseEntity<CountryResponseDTO> updateCountry(
+            @PathVariable Integer countryId,
+            @RequestBody CountryRequestDTO requestDTO) {
+        CountryResponseDTO responseDTO = countryService.updateCountry(countryId, requestDTO);
+        return ResponseEntity.ok(responseDTO);
     }
 
-    // Delete a country
+    @GetMapping("/{countryId}/states")
+    public ResponseEntity<List<StateResponseDTO>> getAllStatesByCountry(@PathVariable Integer countryId) {
+        List<StateResponseDTO> states = countryService.getAllStatesByCountryId(countryId);
+        return ResponseEntity.ok(states);
+    }
+
+    // ✅ Get all countries
+    @GetMapping
+    public ResponseEntity<List<CountryResponseDTO>> getAllCountries() {
+        return ResponseEntity.ok(countryService.getAllCountries());
+    }
+
+    // ✅ Get a country by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<CountryResponseDTO> getCountryById(@PathVariable Integer id) {
+        return ResponseEntity.ok(countryService.getCountryById(id));
+    }
+
+
+    // ✅ Delete a country
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCountry(@PathVariable Integer id) {
-        boolean deleted = countryService.deleteCountryById(id);
-        if (deleted) {
-            return ResponseEntity.ok().build(); // Return 200 OK if the deletion was successful
-        } else {
-            return ResponseEntity.notFound().build(); // Return 404 Not Found if there was no country to delete
-        }
+        countryService.deleteCountry(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/with-states")
-    public ResponseEntity<Country> getCountryWithStates(@PathVariable Integer id) {
 
-        Country country = countryService.getCountryWithStates(id);
-        return ResponseEntity.ok(country); // Return 200 OK with the country data
 
+    // ✅ Add a state to a country (******Have a issue)
+    @PostMapping("/{countryId}/states")
+    public ResponseEntity<StateResponseDTO> addStateToCountry(@PathVariable Integer countryId, @RequestBody StateRequestDTO stateRequestDTO) {
+        StateResponseDTO createdState = countryService.addStateToCountry(countryId, stateRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdState);
     }
 
-    @PostMapping("/{id}/states")
-    public ResponseEntity<String> addStatesToCountry(@PathVariable Integer id, @RequestBody List<State> states) {
-        try {
-            countryService.addStatesToCountry(id, states);
-            return ResponseEntity.status(HttpStatus.CREATED).body("States added successfully");
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Country not found");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while adding states");
-        }
+    // ✅ Update an existing state
+    @PutMapping("/states/{stateId}")
+    public ResponseEntity<StateResponseDTO> updateState(@PathVariable Integer stateId, @RequestBody StateRequestDTO stateRequestDTO) {
+        StateResponseDTO updatedState = countryService.updateState(stateId, stateRequestDTO);
+        return ResponseEntity.ok(updatedState);
+    }
+
+    // ✅ Delete a state
+    @DeleteMapping("/states/{stateId}")
+    public ResponseEntity<Void> deleteState(@PathVariable Integer stateId) {
+        countryService.deleteState(stateId);
+        return ResponseEntity.noContent().build();
     }
 }
